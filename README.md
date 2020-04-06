@@ -1,4 +1,3 @@
 # wisielec_npg
-Projekt z NPG
-Pierwsza zmiana lokalna
-Druga zmiana lokalna
+Projekt z NPG - wersja robocza
+
