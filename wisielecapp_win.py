@@ -8,6 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from baza_win import *
 
 
 class Ui_MainWindow(object):
@@ -201,7 +202,7 @@ class Ui_MainWindow(object):
     def rozpoczecie(self):  # funkcja realizująca funkcjonalosc gry
         self.komunikatedt.setText(str(
             "Rozpoczęto grę na poziomie " + self.poziom_tr + "m. Hasło z kategorii " + self.kategoria + " zostało wylosowane.\nPodaj pierwszą literę:"))
-        self.hasloedt.setText(str(5 * '*  '))
+        self.hasloedt.setText(str(liczba_liter(self) * '*  '))
         self.wynik_edt.setText('0')
 
     def ustaw_kat(self, wartosc):  # funkcja wykrywa ustawienie innej kategorii niz poczatkowa(pierwsza w comboboxie)
@@ -219,6 +220,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
+    polacz()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
