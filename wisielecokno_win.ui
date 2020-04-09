@@ -103,16 +103,6 @@
      <string>Rozpocznij grę!</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="podaj_edt">
-    <property name="geometry">
-     <rect>
-      <x>210</x>
-      <y>480</y>
-      <width>104</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="podaj_btn">
     <property name="geometry">
      <rect>
@@ -383,6 +373,16 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLineEdit" name="podaj_edt">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>480</y>
+      <width>113</width>
+      <height>31</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -48,9 +48,6 @@ class Ui_MainWindow(object):
         font.setPointSize(16)
         self.rozpocznij_bnt.setFont(font)
         self.rozpocznij_bnt.setObjectName("rozpocznij_bnt")
-        self.podaj_edt = QtWidgets.QTextEdit(self.centralwidget)
-        self.podaj_edt.setGeometry(QtCore.QRect(210, 480, 104, 31))
-        self.podaj_edt.setObjectName("podaj_edt")
         self.podaj_btn = QtWidgets.QLabel(self.centralwidget)
         self.podaj_btn.setGeometry(QtCore.QRect(80, 480, 121, 31))
         font = QtGui.QFont()
@@ -144,6 +141,9 @@ class Ui_MainWindow(object):
         self.wynik_edt.setReadOnly(True)
         self.wynik_edt.setObjectName("wynik_edt")
         self.horizontalLayout.addWidget(self.wynik_edt)
+        self.podaj_edt = QtWidgets.QLineEdit(self.centralwidget)
+        self.podaj_edt.setGeometry(QtCore.QRect(200, 480, 113, 31))
+        self.podaj_edt.setObjectName("podaj_edt")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 833, 21))
@@ -162,8 +162,13 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        self.koniec_btn.clicked.connect(self.koniec)
-        self.rozpocznij_bnt.clicked.connect(self.rozpoczecie)
+        self.koniec_btn.clicked.connect(self.koniec)  # obsługa wcisniecia przycisku koniec
+        self.rozpocznij_bnt.clicked.connect(self.rozpoczecie)  # obsluga wcisniecia przycisku rozpocznij gre
+        self.ustaw_kat(self.comboBox_kat.currentText())  # ustawienie kategori poczatkowej
+        self.comboBox_kat.activated[str].connect(self.ustaw_kat)  # obsluga ustawiania kategorii
+        self.ustaw_pt(self.comboBox_pt.currentText())  # ustawienie poziomu tr. poczatkowego
+        self.comboBox_pt.activated[str].connect(self.ustaw_pt)  # obsluga ustawianiapoziomu tr.
+        self.podaj_edt.returnPressed.connect(self.odczytaj)  # obsluga podawania liter
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -191,12 +196,24 @@ class Ui_MainWindow(object):
         self.actionStatystyki.setText(_translate("MainWindow", "Statystyki"))
 
     def koniec(self):
-        exit()
+        exit()  # funkcjonalność przycisku koniec
 
-    def rozpoczecie(self):
-        self.komunikatedt.setText("Rozpoczęto grę. Hasło zostało wylosowane.\nPodaj pierwszą literę:")
-        self.hasloedt.setText(str(5*'*  '))
-        self.wynik_edt.setText("0")
+    def rozpoczecie(self):  # funkcja realizująca funkcjonalosc gry
+        self.komunikatedt.setText(str(
+            "Rozpoczęto grę na poziomie " + self.poziom_tr + "m. Hasło z kategorii " + self.kategoria + " zostało wylosowane.\nPodaj pierwszą literę:"))
+        self.hasloedt.setText(str(5 * '*  '))
+        self.wynik_edt.setText('0')
+
+    def ustaw_kat(self, wartosc):  # funkcja wykrywa ustawienie innej kategorii niz poczatkowa(pierwsza w comboboxie)
+        self.kategoria = wartosc
+
+    def ustaw_pt(self, wartosc):  # funkcja wykrywa ustawienie innego poziou tr. niz poczatkowy(pierwsza w comboboxie)
+        self.poziom_tr = wartosc
+
+    def odczytaj(self):  # funkcja odczytująca podawane litery
+        self.podana_litera = self.podaj_edt.text()
+
+        print(self.podana_litera)
 
 if __name__ == "__main__":
     import sys
