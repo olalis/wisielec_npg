@@ -106,9 +106,3 @@ def wykryj_kategorie(that): #funkcja zamieniająca nazwe kategori (pobraną z co
 def pobierz_haslo(that): #funkcja wybierająca hasło o podanym poziomie i kategori z bazy danych
     haslo = Haslo.select(Haslo.haslo).where(Haslo.kategoria == wykryj_kategorie(that), Haslo.poziom == wykryj_poziom(that)).order_by(fn.Random()).scalar()
     return haslo
-
-
-def liczba_liter(that): #funkcja zwracająca liczbę liter w haśle
-    haslo = pobierz_haslo(that)
-    liczba_li = len(haslo)
-    return liczba_li

@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from baza_ubuntu import *
+import time
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -154,7 +155,6 @@ class Ui_MainWindow(object):
         self.actionWczytaj_gr.setObjectName("actionWczytaj_gr")
         self.actionStatystyki = QtWidgets.QAction(MainWindow)
         self.actionStatystyki.setObjectName("actionStatystyki")
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -195,20 +195,41 @@ class Ui_MainWindow(object):
         exit() #funkcjonalność przycisku koniec
 
     def rozpoczecie(self): #funkcja realizująca funkcjonalosc gry
-        self.komunikatedt.setText(str("Rozpoczęto grę na poziomie "+ self.poziom_tr + "m. Hasło z kategorii " + self.kategoria +" zostało wylosowane.\nPodaj pierwszą literę:"))
-        self.hasloedt.setText(str(liczba_liter(self)*'*  '))
-        self.wynik_edt.setText('0')
+        self.liczba_prob = 10
+        self.wynik=0
+        self.wylosowane_haslo = pobierz_haslo(self)
+        self.komunikatedt.setText(str("Rozpoczęto grę na poziomie "+ self.poziom_tr + "m. Hasło z kategorii " + self.kategoria +" zostało wylosowane.\nPodaj pierwszą literę:\t\t\t\t Pozostało prób:" + str(self.liczba_prob)))
+        self.hasloedt.setText(str(len(self.wylosowane_haslo)*'*  '))
+        self.wynik_edt.setText(str(self.wynik))
+        self.wykorzystane_litery=[]
 
-    def ustaw_kat(self,wartosc): #funkcja wykrywa ustawienie innej kategorii niz poczatkowa(pierwsza w comboboxie)
-        self.kategoria=wartosc
 
-    def ustaw_pt(self,wartosc): #funkcja wykrywa ustawienie innego poziou tr. niz poczatkowy(pierwsza w comboboxie)
-        self.poziom_tr=wartosc
+    def odczytaj(self):  # funkcja odczytująca podawane litery
 
-    def odczytaj(self): #funkcja odczytująca podawane litery
-        self.podana_litera=self.podaj_edt.text()
+        self.podana_litera = self.podaj_edt.text()
+        if self.podana_litera in self.wylosowane_haslo and self.podana_litera not in self.wykorzystane_litery:
+            self.wykorzystane_litery.append(self.podana_litera)
+            self.wynik += 500
+            self.wynik_edt.setText(str(self.wynik))
+            self.komunikatedt.setText("Brawo zgadłeś! \t\t\t\t Pozostało prób:" + str(self.liczba_prob) +"\nPodaj następną literę\t\t\t Wykorzystane litery:"+ str(self.wykorzystane_litery))
+        elif self.podana_litera in self.wykorzystane_litery:
+            self.komunikatedt.setText("Już podałeś tą literę!\t\t\t\tPozostało prób:" + str(self.liczba_prob)+ "\nPodaj następną literę:\t\t\t\tWykorzystane litery:"+str(self.wykorzystane_litery))
+        else:
+            self.wykorzystane_litery.append(self.podana_litera)
+            self.liczba_prob-=1
+            self.wynik-=100
+            self.komunikatedt.setText("Pudło!\t\t\t\tPozostało prób:" + str(self.liczba_prob)+ "\nPodaj następną literę:\t\t\t\tWykorzystane litery:"+str(self.wykorzystane_litery))
+            self.wynik_edt.setText(str(self.wynik))
 
-        print(self.podana_litera)
+    def ustaw_kat(self,wartosc):  # funkcja wykrywa ustawienie innej kategorii niz poczatkowa(pierwsza w comboboxie)
+        self.kategoria = wartosc
+
+    def ustaw_pt(self,wartosc):  # funkcja wykrywa ustawienie innego poziou tr. niz poczatkowy(pierwsza w comboboxie)
+        self.poziom_tr = wartosc
+
+
+
+
 
 if __name__ == "__main__":
     import sys
