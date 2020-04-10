@@ -165,6 +165,7 @@ class Ui_MainWindow(object):
         self.ustaw_pt(self.comboBox_pt.currentText())  # ustawienie poziomu tr. poczatkowego
         self.comboBox_pt.activated[str].connect(self.ustaw_pt)  # obsluga ustawianiapoziomu tr.
         self.podaj_edt.returnPressed.connect(self.odczytaj) #obsluga podawania liter
+        self.wynik=None
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -207,38 +208,55 @@ class Ui_MainWindow(object):
             self.indeksy.append(False)
 
     def czy_wygrana(self): #fukcja sprawdzająca czy wszystkie litery zostały odgadnięte
-        zgadniete = 0
+        self.zgadniete = 0
         for i in range(len(self.wylosowane_haslo)):
             if self.indeksy[i]:
-                zgadniete +=1
-        if zgadniete == len(self.wylosowane_haslo):
-            self.komunikatedt.setText("Gratulacje wygrałeś!!!")
+                self.zgadniete +=1
+        if self.zgadniete == len(self.wylosowane_haslo):
+            self.komunikatedt.setText("Gratulacje wygrałeś!!!\nTwój wynik końcowy: " + str(self.wynik_koncowy()))
+            return True
+
+    def wynik_koncowy(self):
+        if self.poziom_tr == "Łatwy":
+            return self.wynik
+        elif self.poziom_tr == "Średni":
+            return 3*self.wynik
+        elif self.poziom_tr == "Trudny":
+            return 5*self.wynik
 
     def odczytaj(self):  # funkcja odczytująca podawane litery
         self.podana_litera = self.podaj_edt.text().upper()
-        self.podana_litera.upper
-        if self.podana_litera in self.wylosowane_haslo and self.podana_litera not in self.wykorzystane_litery:
-            self.wykorzystane_litery.append(self.podana_litera)
-            self.wynik += 500
-            self.wynik_edt.setText(str(self.wynik))
-            self.komunikatedt.setText("Brawo zgadłeś! \t\t\t\t Pozostało prób:" + str(self.liczba_prob) +"\nPodaj następną literę\t\t\t Wykorzystane litery:"+ str(self.wykorzystane_litery))
+        if self.wynik != None and not self.czy_wygrana():
+            if len(self.podana_litera)==1:
+                if self.podana_litera in self.wylosowane_haslo and self.podana_litera not in self.wykorzystane_litery:
+                    self.wykorzystane_litery.append(self.podana_litera)
+                    self.wynik += 500
+                    self.wynik_edt.setText(str(self.wynik))
+                    self.komunikatedt.setText("Brawo! Zgadłeś! \t\t\t\t Pozostało prób:" + str(self.liczba_prob) +"\nWykorzystane litery:"+ str(self.wykorzystane_litery) +"\nPodaj następną literę: ")
+                    for i in range(len(self.wylosowane_haslo)):
+                        if self.wylosowane_haslo[i] == self.podana_litera:
+                            self.indeksy[i] = True
 
-            for i in range(len(self.wylosowane_haslo)):
-                if self.wylosowane_haslo[i] == self.podana_litera:
-                    self.indeksy[i] = True
+                    haslo_kom = " ".join([litera if self.indeksy[i] else "*" for i, litera in enumerate(self.wylosowane_haslo)])
+                    self.hasloedt.setText(haslo_kom.strip())
+                    self.czy_wygrana()
 
-            haslo_kom = " ".join([litera if self.indeksy[i] else "*" for i, litera in enumerate(self.wylosowane_haslo)])
-            self.hasloedt.setText(haslo_kom.strip())
-            self.czy_wygrana()
-
-        elif self.podana_litera in self.wykorzystane_litery:
-            self.komunikatedt.setText("Już podałeś tą literę!\t\t\t\tPozostało prób:" + str(self.liczba_prob)+ "\nPodaj następną literę:\t\t\t\tWykorzystane litery:"+str(self.wykorzystane_litery))
+                elif self.podana_litera in self.wykorzystane_litery:
+                    self.komunikatedt.setText("Już podałeś tą literę!\t\t\t\t Pozostało prób:" + str(self.liczba_prob) +"\nWykorzystane litery:"+ str(self.wykorzystane_litery) +"\nPodaj następną literę: ")
+                else:
+                    self.wykorzystane_litery.append(self.podana_litera)
+                    self.liczba_prob-=1
+                    self.wynik-=100
+                    self.komunikatedt.setText("Pudło!\t\t\t\t Pozostało prób:" + str(self.liczba_prob) +"\nWykorzystane litery:"+ str(self.wykorzystane_litery) +"\nPodaj następną literę: ")
+                    self.wynik_edt.setText(str(self.wynik))
+                    if self.liczba_prob==0:
+                        self.komunikatedt.setText("GAME OVER")
+            else:
+                self.komunikatedt.setText("Wprowadzono błędne dane! Spróbuj ponownie")
+            self.podaj_edt.setText("")
         else:
-            self.wykorzystane_litery.append(self.podana_litera)
-            self.liczba_prob-=1
-            self.wynik-=100
-            self.komunikatedt.setText("Pudło!\t\t\t\tPozostało prób:" + str(self.liczba_prob)+ "\nPodaj następną literę:\t\t\t\tWykorzystane litery:"+str(self.wykorzystane_litery))
-            self.wynik_edt.setText(str(self.wynik))
+            self.komunikatedt.setText("Aby rozpocząć grę wybierz ustawienia i klknij Rozpocznij grę.")
+            self.podaj_edt.setText("")
 
     def ustaw_kat(self,wartosc):  # funkcja wykrywa ustawienie innej kategorii niz poczatkowa(pierwsza w comboboxie)
         self.kategoria = wartosc
