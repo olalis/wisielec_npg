@@ -202,16 +202,26 @@ class Ui_MainWindow(object):
         self.hasloedt.setText(str(len(self.wylosowane_haslo)*'*  '))
         self.wynik_edt.setText(str(self.wynik))
         self.wykorzystane_litery=[]
+        self.indeksy = []
+        for i in range(len(self.wylosowane_haslo)):
+            self.indeksy.append(False)
 
 
     def odczytaj(self):  # funkcja odczytująca podawane litery
-
         self.podana_litera = self.podaj_edt.text()
         if self.podana_litera in self.wylosowane_haslo and self.podana_litera not in self.wykorzystane_litery:
             self.wykorzystane_litery.append(self.podana_litera)
             self.wynik += 500
             self.wynik_edt.setText(str(self.wynik))
             self.komunikatedt.setText("Brawo zgadłeś! \t\t\t\t Pozostało prób:" + str(self.liczba_prob) +"\nPodaj następną literę\t\t\t Wykorzystane litery:"+ str(self.wykorzystane_litery))
+
+            for i in range(len(self.wylosowane_haslo)):
+                if self.wylosowane_haslo[i] == self.podana_litera:
+                    self.indeksy[i] = True
+
+            haslo_kom = " ".join([litera if self.indeksy[i] else "*" for i, litera in enumerate(self.wylosowane_haslo)])
+            self.hasloedt.setText(haslo_kom.strip())
+
         elif self.podana_litera in self.wykorzystane_litery:
             self.komunikatedt.setText("Już podałeś tą literę!\t\t\t\tPozostało prób:" + str(self.liczba_prob)+ "\nPodaj następną literę:\t\t\t\tWykorzystane litery:"+str(self.wykorzystane_litery))
         else:
