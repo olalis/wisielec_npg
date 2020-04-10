@@ -215,7 +215,8 @@ class Ui_MainWindow(object):
             self.komunikatedt.setText("Gratulacje wygrałeś!!!")
 
     def odczytaj(self):  # funkcja odczytująca podawane litery
-        self.podana_litera = self.podaj_edt.text()
+        self.podana_litera = self.podaj_edt.text().upper()
+        self.podana_litera.upper
         if self.podana_litera in self.wylosowane_haslo and self.podana_litera not in self.wykorzystane_litery:
             self.wykorzystane_litery.append(self.podana_litera)
             self.wynik += 500
