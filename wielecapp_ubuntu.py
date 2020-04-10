@@ -206,6 +206,13 @@ class Ui_MainWindow(object):
         for i in range(len(self.wylosowane_haslo)):
             self.indeksy.append(False)
 
+    def czy_wygrana(self): #fukcja sprawdzająca czy wszystkie litery zostały odgadnięte
+        zgadniete = 0
+        for i in range(len(self.wylosowane_haslo)):
+            if self.indeksy[i]:
+                zgadniete +=1
+        if zgadniete == len(self.wylosowane_haslo):
+            self.komunikatedt.setText("Gratulacje wygrałeś!!!")
 
     def odczytaj(self):  # funkcja odczytująca podawane litery
         self.podana_litera = self.podaj_edt.text()
@@ -221,6 +228,7 @@ class Ui_MainWindow(object):
 
             haslo_kom = " ".join([litera if self.indeksy[i] else "*" for i, litera in enumerate(self.wylosowane_haslo)])
             self.hasloedt.setText(haslo_kom.strip())
+            self.czy_wygrana()
 
         elif self.podana_litera in self.wykorzystane_litery:
             self.komunikatedt.setText("Już podałeś tą literę!\t\t\t\tPozostało prób:" + str(self.liczba_prob)+ "\nPodaj następną literę:\t\t\t\tWykorzystane litery:"+str(self.wykorzystane_litery))
@@ -236,8 +244,6 @@ class Ui_MainWindow(object):
 
     def ustaw_pt(self,wartosc):  # funkcja wykrywa ustawienie innego poziou tr. niz poczatkowy(pierwsza w comboboxie)
         self.poziom_tr = wartosc
-
-
 
 
 
